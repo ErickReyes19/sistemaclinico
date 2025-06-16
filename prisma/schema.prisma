@@ -12,7 +12,6 @@ datasource db {
 model Empleados {
   id        String  @id @default(uuid()) @db.VarChar(36)
   puesto_id String  @db.VarChar(36)
-  jefe_id   String? @db.VarChar(36)
 
   // Del Excel:
   numeroIdentificacion  String    @db.VarChar(50) // "Número de Identificación"
@@ -31,7 +30,6 @@ model Empleados {
   Puesto          Puesto      @relation(fields: [puesto_id], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Empleados_Puesto_puesto_id")
   Usuarios Usuarios?
 
-  @@index([jefe_id], map: "IX_Empleados_jefe_id")
   @@index([puesto_id], map: "IX_Empleados_puesto_id")
 }
 

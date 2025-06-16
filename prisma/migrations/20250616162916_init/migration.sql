@@ -2,7 +2,6 @@
 CREATE TABLE `Empleados` (
     `id` VARCHAR(36) NOT NULL,
     `puesto_id` VARCHAR(36) NOT NULL,
-    `jefe_id` VARCHAR(36) NULL,
     `numeroIdentificacion` VARCHAR(50) NOT NULL,
     `nombre` VARCHAR(100) NOT NULL,
     `apellido` VARCHAR(100) NOT NULL,
@@ -15,7 +14,6 @@ CREATE TABLE `Empleados` (
     `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updateAt` DATETIME(3) NOT NULL,
 
-    INDEX `IX_Empleados_jefe_id`(`jefe_id`),
     INDEX `IX_Empleados_puesto_id`(`puesto_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
