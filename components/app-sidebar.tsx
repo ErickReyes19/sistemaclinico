@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Calculator, ChevronDown, ChevronUp, File, FileCheck2, Files, LayersIcon, ListOrderedIcon, LucideFilePen, Package, Settings, UserIcon, UserRoundCheck, UsersIcon } from 'lucide-react';
+import { Calculator, ChevronDown, ChevronUp, LayersIcon, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -54,30 +54,17 @@ const mantenimientoItems = [
   },
 ];
 
-const DiseñoGraficoItem = [
-  {
-    title: "Tipos de Sección",
-    url: "/tipo-seccion",
-    icon: ListOrderedIcon,
-    permiso: "ver_tipo_seccion",
-  },
-  {
-    title: "Reporte Diseño",
-    url: "/reporte-diseno",
-    icon: LucideFilePen,
-    permiso: "ver_reporte_diseno",
-  },
-]
+
 
 
 // Menu items con permisos necesarios (sin los items de mantenimiento)
 const items = [
 
   {
-    title: "Solicitudes",
-    url: "/solicitudes",
-    icon: Files,
-    permiso: "ver_solicitudes",
+    title: "Clientes",
+    url: "/clientes",
+    icon: Users,
+    permiso: "ver_clientes",
   },
 
   {
@@ -86,18 +73,7 @@ const items = [
     icon: Calculator,
     permiso: "ver_contabilidad",
   },
-  {
-    title: "Inventario",
-    url: "/inventario",
-    icon: Package,
-    permiso: "ver_inventario",
-  },
-  {
-    title: "Voucher de Pago",
-    url: "/voucher-pago",
-    icon: File,
-    permiso: "ver_voucher_pago",
-  }
+
 ];
 
 export async function AppSidebar() {
@@ -113,13 +89,11 @@ export async function AppSidebar() {
   const filteredMantenimientoItems = mantenimientoItems.filter(item =>
     permisosUsuario.includes(item.permiso)
   );
-  const filteredDiseñoItems = DiseñoGraficoItem.filter(item =>
-    permisosUsuario.includes(item.permiso)
-  );
+
 
   // Solo mostrar la sección de mantenimiento si hay al menos un ítem con permiso
   const showMantenimiento = filteredMantenimientoItems.length > 0;
-  const showDiseño = filteredDiseñoItems.length > 0;
+
 
   return (
     <Sidebar collapsible="icon" variant="floating">
@@ -171,33 +145,6 @@ export async function AppSidebar() {
                 </Collapsible>
               )}
 
-              {showDiseño && (
-                <Collapsible className="group/collapsible">
-                  <SidebarMenuItem>
-                    <CollapsibleTrigger asChild >
-                      <SidebarMenuButton>
-                        <FileCheck2 size={16} className="p-0" />
-                        <span>Reportes Diseño</span>
-                        <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
-                        <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {DiseñoGraficoItem.map((item) => (
-                          <SidebarMenuSubItem key={item.title}>
-                            <SidebarMenuSubButton asChild>
-                              <Link href={item.url}>
-                                {item.title}
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </SidebarMenuItem>
-                </Collapsible>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -144,48 +144,60 @@ export async function getRolPermisoById(id: string): Promise<RolDTO | null> {
 }
 
 
-export async function postRol({
-  rol,
-}: {
-  rol: RolDTO;
-}): Promise<RolDTO | null> {
+export async function postRol({ rol }: { rol: RolDTO; }): Promise<RolDTO> {
+  // Verificar si el rol ya existe
+  const existente = await prisma.rol.findUnique({
+    where: { nombre: rol.nombre.trim() },
+    include: {
+      permisos: { include: { permiso: true } }
+    }
+  });
+  if (existente) {
+    // Puedes devolver el existente o lanzar error
+    return {
+      id: existente.id,
+      nombre: existente.nombre,
+      descripcion: existente.descripcion,
+      activo: existente.activo,
+      permisos: existente.permisos.map(rp => ({
+        id: rp.permiso.id,
+        nombre: rp.permiso.nombre
+      }))
+    };
+  }
+
   try {
     const created = await prisma.rol.create({
       data: {
-        // Generamos un UUID para el rol
         id: randomUUID(),
-        nombre: rol.nombre,
+        nombre: rol.nombre.trim(),
         descripcion: rol.descripcion,
         activo: rol.activo ?? true,
         permisos: {
           create: rol.permisos.map((p: PermisosRol) => ({
-            id: p.id,
-            permiso: { connect: { id: p.id } },
+            // Generar nuevo id para la relación
+            id: randomUUID(),
+            permiso: { connect: { id: p.id } }
           })),
         },
       },
       include: {
-        permisos: {
-          include: {
-            permiso: true,
-          },
-        },
+        permisos: { include: { permiso: true } }
       },
     });
 
-    // Mapeamos a tu DTO RolDTO
     return {
       id: created.id,
       nombre: created.nombre,
       descripcion: created.descripcion,
       activo: created.activo,
-      permisos: created.permisos.map((rp) => ({
+      permisos: created.permisos.map(rp => ({
         id: rp.permiso.id,
-        nombre: rp.permiso.nombre,
+        nombre: rp.permiso.nombre
       })),
     };
   } catch (error) {
-    console.error("Error al crear el rol:", error);
-    return null;
+    console.error('Error al crear el rol:', error);
+    throw error;
   }
 }

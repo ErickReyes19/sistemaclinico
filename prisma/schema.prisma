@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../app/generated/prisma"
@@ -10,37 +9,38 @@ datasource db {
 }
 
 model Empleados {
-  id        String  @id @default(uuid()) @db.VarChar(36)
-  puesto_id String  @db.VarChar(36)
+  id        String @id @default(uuid()) @db.VarChar(36)
+  puesto_id String @db.VarChar(36)
 
-  // Del Excel:
-  numeroIdentificacion  String    @db.VarChar(50) // "Número de Identificación"
-  nombre                String    @db.VarChar(100) // "Nombres"
-  apellido              String    @db.VarChar(100) // "Apellidos"
-  correo                String    @db.LongText // "Correo Electrónico Personal"
-  FechaNacimiento       DateTime? @db.DateTime(6) // armada a partir de "Dia"/"Mes"/"Año"
-  fechaIngreso          DateTime? @db.DateTime(6) // armada a partir de "Dia.1"/"Mes.1"/"Año.1"
-  telefono              String?   @db.VarChar(20) // "Número de Celular de Cliente"
+  numeroIdentificacion String    @db.VarChar(50)
+  nombre               String    @db.VarChar(100)
+  apellido             String    @db.VarChar(100)
+  correo               String    @db.LongText
+  FechaNacimiento      DateTime? @db.DateTime(6)
+  fechaIngreso         DateTime? @db.DateTime(6)
+  telefono             String?   @db.VarChar(20)
 
+  genero   String?  @db.VarChar(20)
+  activo   Boolean  @db.Bit(1)
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 
-  genero     String?  @db.VarChar(20) // "Genero"
-  activo     Boolean  @db.Bit(1)
-  createAt   DateTime @default(now())
-  updateAt   DateTime @updatedAt
-  Puesto          Puesto      @relation(fields: [puesto_id], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Empleados_Puesto_puesto_id")
-  Usuarios Usuarios?
+  Puesto     Puesto       @relation(fields: [puesto_id], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Empleados_Puesto_puesto_id")
+  Usuarios   Usuarios?
+  Cita       Cita[]
+  Expediente Expediente[]
 
   @@index([puesto_id], map: "IX_Empleados_puesto_id")
 }
 
 model Puesto {
-  Id                      String                    @id @db.VarChar(36)
-  Nombre                  String                    @db.VarChar(100)
-  Descripcion             String                    @db.VarChar(100)
-  Activo                  Boolean                   @db.Bit(1)
-  createAt                DateTime                  @default(now())
-  updateAt                DateTime                  @updatedAt
-  Empleados               Empleados[]
+  Id          String      @id @db.VarChar(36)
+  Nombre      String      @db.VarChar(100)
+  Descripcion String      @db.VarChar(100)
+  Activo      Boolean     @db.Bit(1)
+  createAt    DateTime    @default(now())
+  updateAt    DateTime    @updatedAt
+  Empleados   Empleados[]
 }
 
 model Permiso {
@@ -104,4 +104,115 @@ model PasswordResetToken {
   Usuario Usuarios @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId], map: "IX_PasswordResetToken_userId")
+}
+
+model Cliente {
+  id                   String    @id @default(uuid())
+  nombre               String    @db.VarChar(100)
+  apellido             String    @db.VarChar(100)
+  correo               String?   @unique @db.VarChar(150)
+  telefono             String?   @db.VarChar(20)
+  fechaNacimiento      DateTime?
+  genero               String?   @db.VarChar(20)
+  numeroIdentificacion String   @db.VarChar(20)
+  direccion            String?   @db.VarChar(255)
+  activo               Boolean   @default(true)
+  createAt             DateTime  @default(now())
+  updateAt             DateTime  @updatedAt
+
+  citas       Cita[]
+  expedientes Expediente[]
+}
+
+model ServicioClinico {
+  id          String   @id @default(uuid())
+  nombre      String   @db.VarChar(100)
+  descripcion String?  @db.Text
+  precio      Decimal  @db.Decimal(10, 2)
+  activo      Boolean  @default(true)
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
+
+  citas Cita[]
+}
+
+model Cita {
+  id         String   @id @default(uuid())
+  clienteId  String   @db.VarChar(36)
+  empleadoId String   @db.VarChar(36)
+  servicioId String   @db.VarChar(36)
+  fechaHora  DateTime
+  estado     String   @default("pendiente")
+  notas      String?  @db.Text
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+
+  cliente  Cliente         @relation(fields: [clienteId], references: [id])
+  empleado Empleados       @relation(fields: [empleadoId], references: [id])
+  servicio ServicioClinico @relation(fields: [servicioId], references: [id])
+
+  Consulta Consulta[]
+}
+
+model Expediente {
+  id          String   @id @default(uuid())
+  clienteId   String   @db.VarChar(36)
+  empleadoId  String   @db.VarChar(36)
+  descripcion String   @db.Text
+  fecha       DateTime @default(now())
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
+
+  archivos ArchivoExpediente[]
+
+  cliente  Cliente   @relation(fields: [clienteId], references: [id])
+  empleado Empleados @relation(fields: [empleadoId], references: [id])
+
+  Consulta Consulta[]
+}
+
+model ArchivoExpediente {
+  id           String   @id @default(uuid())
+  expedienteId String   @db.VarChar(36)
+  archivo      String   @db.VarChar(255)
+  createAt     DateTime @default(now())
+
+  expediente Expediente @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+}
+
+model Consulta {
+  id              String   @id @default(uuid())
+  citaId          String?  @db.VarChar(36)
+  expedienteId    String?  @db.VarChar(36)
+  diagnostico     String   @db.Text
+  recomendaciones String?  @db.Text
+  fecha           DateTime @default(now())
+  createAt        DateTime @default(now())
+  updateAt        DateTime @updatedAt
+
+  cita       Cita?       @relation(fields: [citaId], references: [id])
+  expediente Expediente? @relation(fields: [expedienteId], references: [id])
+  pruebas    Prueba[]
+}
+
+model Prueba {
+  id         String   @id @default(uuid())
+  consultaId String   @db.VarChar(36)
+  tipo       String   @db.VarChar(100)
+  resultado  String   @db.Text
+  fecha      DateTime @default(now())
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+
+  consulta Consulta        @relation(fields: [consultaId], references: [id])
+  archivos PruebaArchivo[]
+}
+
+model PruebaArchivo {
+  id       String   @id @default(uuid())
+  pruebaId String   @db.VarChar(36)
+  archivo  String   @db.VarChar(255)
+  createAt DateTime @default(now())
+
+  prueba Prueba @relation(fields: [pruebaId], references: [id], onDelete: Cascade)
 }

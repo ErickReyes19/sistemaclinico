@@ -23,6 +23,10 @@ async function main() {
     { nombre: "ver_empleados", descripcion: "Permiso para ver los empleados" },
     { nombre: "crear_empleados", descripcion: "Permiso para crear los empleados" },
     { nombre: "editar_empleado", descripcion: "Permiso para editar los empleados" },
+    // Clientes
+    { nombre: "ver_clientes", descripcion: "Permiso para ver los clientes" },
+    { nombre: "crear_clientes", descripcion: "Permiso para crear los clientes" },
+    { nombre: "editar_clientes", descripcion: "Permiso para editar los clientes" },
 
     // { nombre: "editar_empleado", descripcion: "Permiso para editar los empleados" },
     // Permisos
