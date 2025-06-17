@@ -52,12 +52,6 @@ const mantenimientoItems = [
     icon: UserRoundCheck,
     permiso: "ver_puestos",
   },
-  {
-    title: "Configuración",
-    url: "/configuracion-permisos",
-    icon: Settings,
-    permiso: "ver_usuarios",
-  },
 ];
 
 const DiseñoGraficoItem = [
@@ -132,7 +126,7 @@ export async function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="flex justify-between items-center">
-            <span>Sistema Autogestión MP</span>
+            <span>Sistema Clinica</span>
             <ToggleThemeButton />
           </SidebarGroupLabel>
 
