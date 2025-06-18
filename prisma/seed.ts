@@ -43,6 +43,11 @@ async function main() {
     { nombre: "ver_puestos", descripcion: "Permiso para ver puestos" },
     { nombre: "crear_puestos", descripcion: "Permiso para crear puestos" },
     { nombre: "editar_puestos", descripcion: "Permiso para editar puestos" },
+
+    // Servicios
+    { nombre: "ver_servicios", descripcion: "Permiso para ver los servicios" },
+    { nombre: "crear_servicios", descripcion: "Permiso para crear servicios" },
+    { nombre: "editar_servicios", descripcion: "Permiso para editar servicios" },
     // Perfil
     { nombre: "ver_profile", descripcion: "Permiso para ver el perfil" },
 

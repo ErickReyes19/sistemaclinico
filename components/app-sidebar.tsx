@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Calculator, ChevronDown, ChevronUp, LayersIcon, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
+import { ChevronDown, ChevronUp, LayersIcon, ListCheck, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -68,10 +68,10 @@ const items = [
   },
 
   {
-    title: "Contabilidad",
-    url: "/contabilidad",
-    icon: Calculator,
-    permiso: "ver_contabilidad",
+    title: "Servicios",
+    url: "/servicios",
+    icon: ListCheck,
+    permiso: "ver_servicios",
   },
 
 ];
